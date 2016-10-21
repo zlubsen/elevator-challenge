@@ -1,0 +1,19 @@
+
+Iemand wil met de lift en drukt op knop boven/beneden
+
+1. Er staat een lift stil
+	- de lift naar die verdieping sturen
+	-> event: passagier stapt in en drukt op de bestemming
+
+2. Een lift beweegt al en komt langs de verdieping in de juiste richting
+	- indien voldoende capaciteit, lift laten stoppen op deze verdieping
+	-> event: passagier stapt in en drukt op de bestemming
+	- (uiteindelijke bestemming kan verder komen te liggen dan dat deze was)
+
+2. Een lift beweegt al en komt langs de verdieping in de juiste richting, maar is vol
+	- request bijhouden en aan een lift toewijzen als deze beschikbaar komt.
+	- welke: degene die het dichtste bij klaar is (einde van de destinationqueue)
+
+3. Alle liften bewegen en komen niet langs de verdieping in de juiste richting
+	- request bijhouden en aan een lift toewijzen als deze beschikbaar komt.
+	- welke: degene die het dichtste bij klaar is (einde van de destinationqueue)
