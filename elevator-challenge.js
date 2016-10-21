@@ -39,9 +39,9 @@
 
 				// add to queue, make sure it is in the order in which we are travelling, and continue travel
 				elevator.destinationQueue.push(floorNum);
-				elevator.destinationQueue.sort();
-				if(elevator.destinationDirection() === "down")
-					elevator.destinationQueue.reverse();
+				//elevator.destinationQueue.sort();
+				//if(elevator.destinationDirection() === "down")
+				//	elevator.destinationQueue.reverse();
 
 				elevator.checkDestinationQueue();
 
@@ -55,10 +55,11 @@
   			elevator.on("stopped_at_floor",function(floorNum){
   				// people can get in here; if the waitingQueue says there is someone, remove the request from the queue.
           console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": Stopping at floor " + floorNum);
-          if(waitingQueue[0] == floorNum) {
+/*          if(waitingQueue[0] == floorNum) {
             console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": We're at the same floor as the head of the waitingQueue, removing");
 				    waitingQueue.shift();
-          }
+          }*/
+          waitingQueue = waitingQueue.filter(function(item) {return item != floorNum;});
 
           printElevatorQueue(elevator);
           printWaitingQueue();
