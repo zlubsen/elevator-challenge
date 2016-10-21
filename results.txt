@@ -1,0 +1,22 @@
+= #1 = 88d9a29
+Transported: 15
+Elapsed time: 52s
+Transported/s: 0.291
+Avg waiting time: 4.9s
+Max waiting time: 10.8s
+Moves: 27
+
+
+
+
+
+
+
+
+==== Boilerplate ====
+Transported:
+Elapsed time:
+Transported/s:
+Avg waiting time:
+Max waiting time:
+Moves:
