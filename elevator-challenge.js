@@ -77,6 +77,7 @@
         	});
 		}
 
+    // TODO: fix picking people up in-transit going the same direction
 		function dispatchElevator(floorNum, direction) {
 			// first check if there is an elevator moving, and already passing the floor in the right direction
 			var passingElevators = findPassingElevator(floorNum,direction);

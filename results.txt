@@ -22,7 +22,7 @@ Avg waiting time: 9.2s
 Max waiting time: 32.3s
 Moves: 35
 
-= #4 = 0ea8879
+= #4 = 700f39f
 Transported: 28
 Elapsed time: 53s
 Transported/s: 0.526
