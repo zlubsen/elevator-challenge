@@ -15,8 +15,6 @@
       elevator.on("idle", function() {
         console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": idle at floor " + elevator.currentFloor());
 
-        //setElevatorAvailable(elevator);
-
         // Go to the first floor where someone is waiting, remove request from waitingQueue.
         if(waitingQueue.length > 0) {
           console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": servicing waitingQueue, going to floor " + waitingQueue[0] + ", because someone is waiting there.");
@@ -27,6 +25,9 @@
             console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": no-one is waiting, going to 0");
             elevator.goToFloor(0);
         }
+
+        setElevatorAvailable(elevator); 
+
 				// next step: if no-one is waiting, go to a 'strategic' floor to wait for passengers
 
         printElevatorQueue(elevator);
@@ -39,10 +40,6 @@
 
 				// add to queue, make sure it is in the order in which we are travelling, and continue travel
 				elevator.destinationQueue.push(floorNum);
-				//elevator.destinationQueue.sort();
-				//if(elevator.destinationDirection() === "down")
-				//	elevator.destinationQueue.reverse();
-
 				elevator.checkDestinationQueue();
 
         printElevatorQueue(elevator);
@@ -55,12 +52,11 @@
   			elevator.on("stopped_at_floor",function(floorNum){
   				// people can get in here; if the waitingQueue says there is someone, remove the request from the queue.
           console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": Stopping at floor " + floorNum);
-/*          if(waitingQueue[0] == floorNum) {
-            console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": We're at the same floor as the head of the waitingQueue, removing");
-				    waitingQueue.shift();
-          }*/
+
           waitingQueue = waitingQueue.filter(function(item) {return item != floorNum;});
 
+          setElevatorAvailable(elevator);
+          
           printElevatorQueue(elevator);
           printWaitingQueue();
 			});
@@ -68,12 +64,12 @@
 
 		function registerFloorEvents(floor) {
 			floor.on("up_button_pressed",function(){
-				dispatchElevator(floor.floorNum(),"up");
         console.log("up_button_pressed at floor: " + floor.floorNum());
+				dispatchElevator(floor.floorNum(),"up");
 			});
 			floor.on("down_button_pressed",function(){
-				dispatchElevator(floor.floorNum(),"down");
         console.log("down_button_pressed at floor: " + floor.floorNum());
+				dispatchElevator(floor.floorNum(),"down");
         	});
 		}
 
@@ -94,7 +90,6 @@
 				// otherwise signal that someone is waiting at this floor; push to end of the queue
 				console.log("Request: " + floorNum + ", " + direction + ": queue-ing for floor: " + floorNum);
 				waitingQueue.push(floorNum);
-        console.log
 			}
       printWaitingQueue();
 
@@ -112,12 +107,6 @@
     return availableElevators;
   }
 
-		function elevatorIsFull(elevator) {
-			if(elevator.loadFactor() > 0.95) {
-				return true;
-			}
-			return false;
-		}
 		function setElevatorGoingUp(elevator) {
 			elevator.goingUpIndicator(true);
 			elevator.goingDownIndicator(false);
@@ -126,7 +115,7 @@
 			elevator.goingUpIndicator(false);
 			elevator.goingDownIndicator(true);
 		}
-		function setElevatorNotAvailable(elevator) {
+		function setElevatorIdle(elevator) {
 			elevator.goingUpIndicator(false);
 			elevator.goingDownIndicator(false);
 		}
@@ -134,12 +123,7 @@
 			elevator.goingUpIndicator(true);
 			elevator.goingDownIndicator(true);
 		}
-    function setElevatorDirectorIndicator(elevator,destinationFloorNo){
-      if(elevator.currentFloor() >= destinationFloorNo)
-        setElevatorGoingDown(elevator);
-      else
-        setElevatorGoingUp(elevator);
-    }
+    
 
     function printElevatorQueue(elevator) {
       console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + " queue: " + elevator.destinationQueue.toString());
@@ -152,6 +136,46 @@
 	},
 	update: function(dt, elevators, floors) {
 		// We normally don't need to do anything here
-	}
+    for(elevatorNo in elevators){
+      setElevatorDirectionIndicator(elevators[elevatorNo]);
+    }
 
+    function elevatorIsFull(elevator) {
+      if(elevator.loadFactor() > 0.95) {
+        return true;
+      }
+      return false;
+    }
+
+    function setElevatorDirectionIndicator(elevator){
+      // people are in the elevator, and we're already moving
+      switch(elevator.destinationDirection()) {
+        case "up":
+          elevator.goingUpIndicator(true);
+          elevator.goingDownIndicator(false);
+          break;
+        case "down":
+          elevator.goingUpIndicator(false);
+          elevator.goingDownIndicator(true);
+          break;
+        case "stopped":
+          elevator.goingUpIndicator(true);
+          elevator.goingDownIndicator(true);
+        break;
+      }
+
+      // when full - signal no more people allowed
+      if(elevatorIsFull(elevator)){
+        elevator.goingUpIndicator(false);
+        elevator.goingDownIndicator(false);
+      }
+
+      // no-one is in the elevator, all directions allowed on next press in the elevator
+      if(elevator.loadFactor() === 0) {
+        elevator.goingUpIndicator(true);
+        elevator.goingDownIndicator(true);
+      }
+
+    }
+  }
 }

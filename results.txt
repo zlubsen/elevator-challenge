@@ -2,8 +2,8 @@
 Transported: 15
 Elapsed time: 52s
 Transported/s: 0.291
-Avg waiting time: 4.9s
-Max waiting time: 10.8s
+Avg waiting time: 3.7s
+Max waiting time: 7.8s
 Moves: 27
 
 
