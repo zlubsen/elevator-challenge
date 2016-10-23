@@ -1,4 +1,4 @@
-= #1 = 88d9a29
+= #1 = 0ea8879
 Transported: 15
 Elapsed time: 52s
 Transported/s: 0.291
@@ -6,12 +6,29 @@ Avg waiting time: 3.7s
 Max waiting time: 7.8s
 Moves: 27
 
+= #2 = 0ea8879
+Transported: 21
+Elapsed time: 57s
+Transported/s: 0.370
+Avg waiting time: 8.0s
+Max waiting time: 15.0s
+Moves: 47
 
+= #3 = 0ea8879
+Transported: 23
+Elapsed time: 54s
+Transported/s: 0.423
+Avg waiting time: 9.2s
+Max waiting time: 32.3s
+Moves: 35
 
-
-
-
-
+= #4 = 0ea8879
+Transported: 28
+Elapsed time: 53s
+Transported/s: 0.526
+Avg waiting time: 7.2s
+Max waiting time: 21.6s
+Moves: 91
 
 ==== Boilerplate ====
 Transported:

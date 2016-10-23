@@ -40,6 +40,10 @@
 
 				// add to queue, make sure it is in the order in which we are travelling, and continue travel
 				elevator.destinationQueue.push(floorNum);
+        elevator.destinationQueue.sort(function(a, b){return a-b});
+        if(elevator.destinationDirection() === "down")
+          elevator.destinationQueue.reverse();
+
 				elevator.checkDestinationQueue();
 
         printElevatorQueue(elevator);
