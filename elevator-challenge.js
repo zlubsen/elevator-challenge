@@ -1,7 +1,7 @@
 {
     init: function(elevators, floors) {
 		var topFloor = floors.length-1;
-		var waitingQueue = []; // queue of floornumbers where people are waiting for an elevator.
+		var waitingQueue = []; // queue of [floornumber,direction]-pairs where people are waiting for an elevator.
 
     for(var elevatorNo in elevators) {
         elevators[elevatorNo].id = elevatorNo;
@@ -18,15 +18,13 @@
         // Go to the first floor where someone is waiting, remove request from waitingQueue.
         if(waitingQueue.length > 0) {
           console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": servicing waitingQueue, going to floor " + waitingQueue[0] + ", because someone is waiting there.");
-          var destinationFloorNo = waitingQueue.shift();
-          elevator.goToFloor(destinationFloorNo);
-          //setElevatorDirectorIndicator(elevator,destinationFloorNo)
+          elevator.goToFloor(waitingQueue.shift());
         } else {
             console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": no-one is waiting, going to 0");
             elevator.goToFloor(0);
         }
 
-        setElevatorAvailable(elevator); 
+        setElevatorAvailable(elevator);
 
 				// next step: if no-one is waiting, go to a 'strategic' floor to wait for passengers
 
@@ -60,7 +58,7 @@
           waitingQueue = waitingQueue.filter(function(item) {return item != floorNum;});
 
           setElevatorAvailable(elevator);
-          
+
           printElevatorQueue(elevator);
           printWaitingQueue();
 			});
@@ -85,10 +83,11 @@
 			//passingElevators.sort(function(a,b){a.loadFactor()-b.loadFactor()});
 			if(passingElevators.length>0) {
         // so there is one that is passing by, reroute the elevator to also stop at this floor
+        var id = passingElevators[0].id;
 				console.log("Request: " + floorNum + ", " + direction + ": One is already passing by! Elevator is rerouted.");
-				passingElevators[0].destinationQueue.unshift(floorNum);
-        console.log("Destqueue length: " + passingElevators[0].destinationQueue)
-        passingElevators[0].checkDestinationQueue();
+				elevators[id].destinationQueue.unshift(floorNum);
+        console.log("Destqueue length: " + elevators[id].destinationQueue);
+        elevators[id].checkDestinationQueue();
 
         printElevatorQueue(passingElevators[0]);
 			} else {
@@ -100,16 +99,22 @@
 
 		}
 
-  function findPassingElevator(fromFloorNo, direction){
-    var availableElevators;
+  function findPassingElevator(fromFloorNo, direction) {
+    var passingElevators;
+    console.log("Finding passing elevators: 0) from " + fromFloorNo + " going " + direction);
 
-    availableElevators = elevators.filter(function(elevator) {return elevator.destinationDirection() === direction});
-    if(direction === "up")
-      availableElevators = availableElevators.filter(function(elevator) {return elevator.currentFloor() < fromFloorNo});
-    else
-      availableElevators = availableElevators.filter(function(elevator) {return elevator.currentFloor() > fromFloorNo});
+    passingElevators = elevators.filter(function(elevator) {return elevator.destinationDirection() == direction});
+    console.log("Finding passing elevators: 1) elevators going same dir: " + passingElevators.toString());
 
-    return availableElevators;
+    if(direction === "up") {
+      passingElevators = passingElevators.filter(function(elevator) {return elevator.currentFloor() < fromFloorNo});
+    } else {
+      passingElevators = passingElevators.filter(function(elevator) {return elevator.currentFloor() > fromFloorNo});
+    }
+
+    console.log("Finding passing elevators: 2) elevators above or below this floor: " + passingElevators.toString());
+
+    return passingElevators;
   }
 
 		function setElevatorGoingUp(elevator) {
@@ -128,7 +133,7 @@
 			elevator.goingUpIndicator(true);
 			elevator.goingDownIndicator(true);
 		}
-    
+
 
     function printElevatorQueue(elevator) {
       console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + " queue: " + elevator.destinationQueue.toString());
