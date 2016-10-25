@@ -14,6 +14,14 @@ Avg waiting time: 8.0s
 Max waiting time: 15.0s
 Moves: 47
 
+= #2 = ac4e45e
+Transported: 20
+Elapsed time: 54s
+Transported/s: 0.371
+Avg waiting time: 8.2s
+Max waiting time: 15.1s
+Moves: 34
+
 = #3 = 0ea8879
 Transported: 23
 Elapsed time: 54s
@@ -29,6 +37,22 @@ Transported/s: 0.526
 Avg waiting time: 7.2s
 Max waiting time: 21.6s
 Moves: 91
+
+= #4 = ac4e45e
+Transported: 29
+Elapsed time: 59s
+Transported/s: 0.492
+Avg waiting time: 9.7s
+Max waiting time: 26.1s
+Moves: 106
+
+= #5 = ac4e45e
+Transported: 101
+Elapsed time: 67s
+Transported/s: 1.5
+Avg waiting time: 8.0s
+Max waiting time: 49.3s
+Moves: 181
 
 ==== Boilerplate ====
 Transported:
