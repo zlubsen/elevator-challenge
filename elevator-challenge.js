@@ -17,8 +17,10 @@
 
         // Go to the first floor where someone is waiting, remove request from waitingQueue.
         if(waitingQueue.length > 0) {
-          console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": servicing waitingQueue, going to floor " + waitingQueue[0] + ", because someone is waiting there.");
-          elevator.goToFloor(waitingQueue.shift());
+          console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": servicing waitingQueue, going to floor " + waitingQueue[0].floor + ", because someone is waiting there.");
+          var queueItem = waitingQueue.shift();
+          console.log("@floor: " + queueItem.floor + " @dir: " + queueItem.dir);
+          elevator.goToFloor(queueItem.floor);
         } else {
             console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": no-one is waiting, going to 0");
             elevator.goToFloor(0);
@@ -49,13 +51,33 @@
 
   			elevator.on("passing_floor",function(floorNum, direction){
   				// what to do when we are passing a floor?
+          // see if this there is a request for <floor, direction> in the waitingQueue. If so, stop here and clear all such entries in the waitingQueue
+          if(!elevatorIsFull(elevator)) {
+            var queueIds = []
+            for(var item in waitingQueue) {
+              if(waitingQueue[item].floor == floorNum && waitingQueue[item].dir == direction) {
+                queueIds.push(item);
+              }
+            }
+            console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": passing floor: " + floorNum);
+
+            if(queueIds.length > 0) {
+              console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": found someone waiting for the same direction we're going: " + direction);
+              elevator.destinationQueue.unshift(floorNum);
+              elevator.checkDestinationQueue();
+
+              waitingQueue = waitingQueue.filter(function(item) {return (item.floor != floorNum) && (item.dir != direction);});
+              printWaitingQueue();
+            }
+          }
+
   			});
 
   			elevator.on("stopped_at_floor",function(floorNum){
   				// people can get in here; if the waitingQueue says there is someone, remove the request from the queue.
           console.log("Elevator " + elevator.id + " at " + elevator.currentFloor() + ": Stopping at floor " + floorNum);
 
-          waitingQueue = waitingQueue.filter(function(item) {return item != floorNum;});
+          waitingQueue = waitingQueue.filter(function(item) {return (item.floor != floorNum) && (item.dir != elevator.destinationDirection());});
 
           setElevatorAvailable(elevator);
 
@@ -67,15 +89,29 @@
 		function registerFloorEvents(floor) {
 			floor.on("up_button_pressed",function(){
         console.log("up_button_pressed at floor: " + floor.floorNum());
-				dispatchElevator(floor.floorNum(),"up");
+        addToWaitingQueue(floor.floorNum(),"up");
+				//dispatchElevator(floor.floorNum(),"up");
 			});
 			floor.on("down_button_pressed",function(){
         console.log("down_button_pressed at floor: " + floor.floorNum());
-				dispatchElevator(floor.floorNum(),"down");
+        addToWaitingQueue(floor.floorNum(),"down");
+				//dispatchElevator(floor.floorNum(),"down");
         	});
 		}
 
-    // TODO: fix picking people up in-transit going the same direction
+    function addToWaitingQueue(floorNum, direction) {
+      console.log("Request: " + floorNum + ", " + direction + ": queue-ing for floor: " + floorNum);
+      waitingQueue.push({floor:floorNum, dir:direction});
+    }
+
+    function elevatorIsFull(elevator) {
+      if(elevator.loadFactor() > 0.95) {
+        return true;
+      }
+      return false;
+    }
+
+    // Not used anymore
 		function dispatchElevator(floorNum, direction) {
 			// first check if there is an elevator moving, and already passing the floor in the right direction
 			var passingElevators = findPassingElevator(floorNum,direction);
@@ -89,7 +125,7 @@
         console.log("Destqueue length: " + elevators[id].destinationQueue);
         elevators[id].checkDestinationQueue();
 
-        printElevatorQueue(passingElevators[0]);
+        printElevatorQueue(elevators[id]);
 			} else {
 				// otherwise signal that someone is waiting at this floor; push to end of the queue
 				console.log("Request: " + floorNum + ", " + direction + ": queue-ing for floor: " + floorNum);
