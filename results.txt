@@ -53,6 +53,38 @@ Transported/s: 1.5
 Avg waiting time: 8.0s
 Max waiting time: 49.3s
 Moves: 181
+// struggles on this one quite hard, success about 1 in 5 tries
+
+= #6 = ac4e45e
+Transported: 41
+Elapsed time: 56s
+Transported/s: 0.737
+Avg waiting time: 6.1s
+Max waiting time: 18.8s
+Moves: 59
+
+= #7 =
+// fails
+
+= #8 = ac4e45e
+Transported: 50
+Elapsed time: 127s
+Transported/s: 0.393
+Avg waiting time: 5.5s
+Max waiting time: 12.9s
+Moves: 205
+
+= #9 = ac4e45e
+Transported: 50
+Elapsed time: 85s
+Transported/s: 0.590
+Avg waiting time: 5.5s
+Max waiting time: 14.2s
+Moves: 219
+
+= #9 =
+// fails; big elevator makes too many short moves
+// idea: do a look-ahead of the waitingQueue. Are there people above/below us that would extend the current direction?
 
 ==== Boilerplate ====
 Transported:
