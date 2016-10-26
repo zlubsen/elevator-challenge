@@ -111,49 +111,7 @@
       return false;
     }
 
-    // Not used anymore
-		function dispatchElevator(floorNum, direction) {
-			// first check if there is an elevator moving, and already passing the floor in the right direction
-			var passingElevators = findPassingElevator(floorNum,direction);
-      console.log("Dispatch - # passing elevators found: " + passingElevators.toString());
-			//passingElevators.sort(function(a,b){a.loadFactor()-b.loadFactor()});
-			if(passingElevators.length>0) {
-        // so there is one that is passing by, reroute the elevator to also stop at this floor
-        var id = passingElevators[0].id;
-				console.log("Request: " + floorNum + ", " + direction + ": One is already passing by! Elevator is rerouted.");
-				elevators[id].destinationQueue.unshift(floorNum);
-        console.log("Destqueue length: " + elevators[id].destinationQueue);
-        elevators[id].checkDestinationQueue();
-
-        printElevatorQueue(elevators[id]);
-			} else {
-				// otherwise signal that someone is waiting at this floor; push to end of the queue
-				console.log("Request: " + floorNum + ", " + direction + ": queue-ing for floor: " + floorNum);
-				waitingQueue.push(floorNum);
-			}
-      printWaitingQueue();
-
-		}
-
-  function findPassingElevator(fromFloorNo, direction) {
-    var passingElevators;
-    console.log("Finding passing elevators: 0) from " + fromFloorNo + " going " + direction);
-
-    passingElevators = elevators.filter(function(elevator) {return elevator.destinationDirection() == direction});
-    console.log("Finding passing elevators: 1) elevators going same dir: " + passingElevators.toString());
-
-    if(direction === "up") {
-      passingElevators = passingElevators.filter(function(elevator) {return elevator.currentFloor() < fromFloorNo});
-    } else {
-      passingElevators = passingElevators.filter(function(elevator) {return elevator.currentFloor() > fromFloorNo});
-    }
-
-    console.log("Finding passing elevators: 2) elevators above or below this floor: " + passingElevators.toString());
-
-    return passingElevators;
-  }
-
-		function setElevatorGoingUp(elevator) {
+		/*function setElevatorGoingUp(elevator) {
 			elevator.goingUpIndicator(true);
 			elevator.goingDownIndicator(false);
 		}
@@ -164,7 +122,7 @@
 		function setElevatorIdle(elevator) {
 			elevator.goingUpIndicator(false);
 			elevator.goingDownIndicator(false);
-		}
+		}*/
 		function setElevatorAvailable(elevator) {
 			elevator.goingUpIndicator(true);
 			elevator.goingDownIndicator(true);
